@@ -28,8 +28,16 @@ router.post('/', function(req, res) {
         if (err) {
             res.sendStatus(500);
         }
-        client.quert('INSERT INTO books (author, title, published)' +
-            'VALUES ($1, $2, $3)');
+        client.query('INSERT INTO books (author, title, published, edition, publisher)' +
+            'VALUES ($1, $2, $3, $4, $5)', //"prepared statement"
+            [book.author, book.title, book.published, book.edition, book.publisher], // beware SQL injections!
+            function(err, result) {
+                done();
+                if (err) {
+                    res.sendStatus(500);
+                }
+                res.sendStatus(201);
+            });
     });
 });
 
